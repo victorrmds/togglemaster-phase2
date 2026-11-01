@@ -1,0 +1,146 @@
+services:
+
+  analytics-service:
+    build:
+      context: ./analytics-service
+    env_file:
+      - ./analytics-service/.env
+    environment:
+      PORT: 8005
+      AWS_REGION: sa-east-1
+      AWS_DYNAMODB_TABLE: ToggleMasterAnalytics
+      DYNAMODB_ENDPOINT_URL: http://dynamodb-local:8000
+    ports:
+      - "8005:8005"
+    volumes:
+      - "${USERPROFILE}/.aws:/root/.aws:ro"
+    depends_on:
+      dynamodb-local:
+        condition: service_started
+
+  evaluation-service:
+    build:
+      context: ./evaluation-service
+    env_file:
+      - ./evaluation-service/.env
+    environment:
+      PORT: 8004
+      REDIS_URL: redis://redis:6379
+      FLAG_SERVICE_URL: http://flag-service:8002
+      TARGETING_SERVICE_URL: http://targeting-service:8003
+    ports:
+      - "8004:8004"
+    volumes:
+      - "${USERPROFILE}/.aws:/root/.aws:ro"
+    depends_on:
+      redis:
+        condition: service_healthy
+      flag-service:
+        condition: service_started
+      targeting-service:
+        condition: service_started
+
+  flag-service:
+    build:
+      context: ./flag-service
+    env_file:
+      - ./flag-service/.env
+    environment:
+      DATABASE_URL: postgres://togglemaster:password@postgres-feature:5432/flags_db
+      AUTH_SERVICE_URL: http://auth-service:8001
+      PORT: 8002
+    ports:
+      - "8002:8002"
+    depends_on:
+      postgres-feature:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+
+  targeting-service:
+    build:
+      context: ./targeting-service
+    env_file:
+      - ./targeting-service/.env
+    environment:
+      DATABASE_URL: postgres://togglemaster:password@postgres-feature:5432/targeting_db
+      AUTH_SERVICE_URL: http://auth-service:8001
+      PORT: 8003
+    ports:
+      - "8003:8003"
+    depends_on:
+      postgres-feature:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+
+  auth-service:
+    build:
+      context: ./auth-service
+    env_file:
+      - ./auth-service/.env
+    environment:
+      DATABASE_URL: postgres://togglemaster:password@postgres-auth:5432/auth_db
+      PORT: 8001
+    ports:
+      - "8001:8001"
+    depends_on:
+      postgres-auth:
+        condition: service_healthy
+
+  postgres-auth:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: togglemaster
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: auth_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_auth_data:/var/lib/postgresql/data
+      - ./auth-service/db/init.sql:/docker-entrypoint-initdb.d/01-auth.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U togglemaster -d auth_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  postgres-feature:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: togglemaster
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: flags_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_feature_data:/var/lib/postgresql/data
+      - ./flag-service/db/init.sql:/docker-entrypoint-initdb.d/10-flags.sql:ro
+      - ./docker/postgres-feature/20-targeting.sql:/docker-entrypoint-initdb.d/20-targeting.sql:ro
+      - ./targeting-service/db/init.sql:/targeting-init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U togglemaster -d flags_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+
+  dynamodb-local:
+    image: amazon/dynamodb-local:latest
+    command: "-jar DynamoDBLocal.jar -sharedDb -inMemory"
+    ports:
+      - "8000:8000"
+
+volumes:
+  postgres_auth_data:
+  postgres_feature_data:

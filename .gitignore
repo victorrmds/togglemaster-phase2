@@ -1,0 +1,30 @@
+# Local credentials and environment configuration
+.env
+.env.*
+!.env.example
+!.env.*.example
+.aws/
+credentials
+*.pem
+*.key
+
+# Real Kubernetes Secrets; publish only placeholder examples
+*-secret.yaml
+*-secret.yml
+*-secrets.yaml
+*-secrets.yml
+secrets.yaml
+secrets.yml
+!*.example.yaml
+!*.example.yml
+
+# Generated and local development files
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.idea/
+.vscode/
+*.log
+.DS_Store
+Thumbs.db
