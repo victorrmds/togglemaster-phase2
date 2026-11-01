@@ -1,0 +1,14 @@
+{
+  "apiVersion": "keda.sh/v1alpha1",
+  "kind": "TriggerAuthentication",
+  "metadata": {
+    "name": "analytics-sqs-auth",
+    "namespace": "togglemaster"
+  },
+  "spec": {
+    "podIdentity": {
+      "identityOwner": "keda",
+      "provider": "aws"
+    }
+  }
+}

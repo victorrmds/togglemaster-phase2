@@ -1,0 +1,32 @@
+{
+  "apiVersion": "networking.k8s.io/v1",
+  "kind": "Ingress",
+  "metadata": {
+    "name": "togglemaster-ingress",
+    "namespace": "togglemaster"
+  },
+  "spec": {
+    "ingressClassName": "nginx",
+    "rules": [
+      {
+        "host": "a09b6495531d148068bed432864d8699-1292720486.sa-east-1.elb.amazonaws.com",
+        "http": {
+          "paths": [
+            {
+              "backend": {
+                "service": {
+                  "name": "evaluation-service",
+                  "port": {
+                    "number": 8004
+                  }
+                }
+              },
+              "path": "/evaluate",
+              "pathType": "Exact"
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

@@ -1,0 +1,77 @@
+# JSON syntax is valid YAML. Reconstructed from applied configuration.
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "evaluation-service",
+    "namespace": "togglemaster"
+  },
+  "spec": {
+    "selector": {
+      "matchLabels": {
+        "app": "evaluation-service"
+      }
+    },
+    "template": {
+      "metadata": {
+        "labels": {
+          "app": "evaluation-service"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "envFrom": [
+              {
+                "configMapRef": {
+                  "name": "evaluation-config"
+                }
+              },
+              {
+                "secretRef": {
+                  "name": "evaluation-secret"
+                }
+              }
+            ],
+            "image": "302795277290.dkr.ecr.sa-east-1.amazonaws.com/togglemaster-evaluation-service:latest",
+            "imagePullPolicy": "Always",
+            "livenessProbe": {
+              "httpGet": {
+                "path": "/health",
+                "port": "http"
+              },
+              "initialDelaySeconds": 15,
+              "periodSeconds": 20
+            },
+            "name": "evaluation-service",
+            "ports": [
+              {
+                "containerPort": 8004,
+                "name": "http"
+              }
+            ],
+            "readinessProbe": {
+              "httpGet": {
+                "path": "/health",
+                "port": "http"
+              },
+              "initialDelaySeconds": 5,
+              "periodSeconds": 10
+            },
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "256Mi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "128Mi"
+              }
+            }
+          }
+        ],
+        "serviceAccountName": "evaluation-service"
+      }
+    }
+  }
+}

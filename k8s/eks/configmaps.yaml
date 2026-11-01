@@ -1,0 +1,52 @@
+# Application configuration used in the verified deployment; verify before a new installation.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-config
+  namespace: togglemaster
+data:
+  PORT: "8001"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: flag-config
+  namespace: togglemaster
+data:
+  PORT: "8002"
+  AUTH_SERVICE_URL: "http://auth-service:8001"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: targeting-config
+  namespace: togglemaster
+data:
+  PORT: "8003"
+  AUTH_SERVICE_URL: "http://auth-service:8001"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: evaluation-config
+  namespace: togglemaster
+data:
+  PORT: "8004"
+  REDIS_URL: "redis://togglemaster-redis.d3zltg.ng.0001.sae1.cache.amazonaws.com:6379/0"
+  FLAG_SERVICE_URL: "http://flag-service:8002"
+  TARGETING_SERVICE_URL: "http://targeting-service:8003"
+  AWS_REGION: "sa-east-1"
+  AWS_SQS_URL: "https://sqs.sa-east-1.amazonaws.com/302795277290/ToggleMasterEvaluationEvents"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: analytics-config
+  namespace: togglemaster
+data:
+  PORT: "8005"
+  AWS_REGION: "sa-east-1"
+  AWS_SQS_URL: "https://sqs.sa-east-1.amazonaws.com/302795277290/ToggleMasterEvaluationEvents"
+  AWS_DYNAMODB_TABLE: "ToggleMasterAnalytics"
+  # DYNAMODB_ENDPOINT_URL intentionally absent: use the managed AWS service.
+

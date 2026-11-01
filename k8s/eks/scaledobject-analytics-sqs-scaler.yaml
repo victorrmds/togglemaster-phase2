@@ -1,0 +1,41 @@
+{
+  "apiVersion": "keda.sh/v1alpha1",
+  "kind": "ScaledObject",
+  "metadata": {
+    "name": "analytics-sqs-scaler",
+    "namespace": "togglemaster"
+  },
+  "spec": {
+    "advanced": {
+      "horizontalPodAutoscalerConfig": {
+        "behavior": {
+          "scaleDown": {
+            "stabilizationWindowSeconds": 120
+          }
+        }
+      }
+    },
+    "cooldownPeriod": 120,
+    "maxReplicaCount": 3,
+    "minReplicaCount": 0,
+    "pollingInterval": 10,
+    "scaleTargetRef": {
+      "name": "analytics-service"
+    },
+    "triggers": [
+      {
+        "authenticationRef": {
+          "name": "analytics-sqs-auth"
+        },
+        "metadata": {
+          "activationQueueLength": "0",
+          "awsRegion": "sa-east-1",
+          "queueLength": "20",
+          "queueURL": "https://sqs.sa-east-1.amazonaws.com/302795277290/ToggleMasterEvaluationEvents",
+          "scaleOnInFlight": "true"
+        },
+        "type": "aws-sqs-queue"
+      }
+    ]
+  }
+}
