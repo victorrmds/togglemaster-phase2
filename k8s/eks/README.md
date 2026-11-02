@@ -1,6 +1,6 @@
 # Manifestos EKS
 
-Reconstruídos a partir das saídas fornecidas do cluster em 01/11/2026.
+Manifestos correspondentes à configuração EKS validada em 01/11/2026.
 JSON é sintaxe válida em arquivos YAML. Metadados de execução e status foram removidos.
 
 ## Pré-requisitos
@@ -45,6 +45,4 @@ A migração de gerenciamento de replicas em ambientes existentes deve ser revis
 - Probes /health são simples e não validam a saúde de todas as dependências.
 - Imagens usam latest como no ambiente testado; fixação por digest é evolução futura.
 
-ConfigMaps foram recuperados da configuração anteriormente aplicada e ainda precisam
-ser comparados com os valores atuais. Não há garantia de reprodução integral da
-infraestrutura AWS apenas com estes arquivos Kubernetes.
+Em 01/11/2026, o server dry-run aceitou os manifestos e os cinco ConfigMaps retornaram `unchanged`. Essa validação não provisiona a infraestrutura AWS nem substitui testes funcionais em outra conta ou cluster.

@@ -2,6 +2,14 @@
 
 Projeto de microsserviços com Docker Compose e AWS EKS, desenvolvido por Victor Leonardo.
 
+## Entrega
+
+- Participante: Victor Leonardo · RM rm375744
+- Discord: `_vimedina_18014`
+- Modalidade: individual
+- Vídeo: https://youtu.be/-uGdLy0lFYo
+- Repositório: https://github.com/victorrmds/togglemaster-phase2
+
 ## Arquitetura
 
 ```mermaid
@@ -42,7 +50,7 @@ DynamoDB armazena eventos. SQS desacopla avaliação e processamento assíncrono
 - `kubernetes/secrets.example.yaml`: somente placeholders; não aplicar diretamente.
 - `CREDENTIALS.md`: configuração privada e cuidados de publicação.
 - `docs/TESTES.md`: resultados e limites dos testes.
-- `docs/ROTEIRO-VIDEO.md`: roteiro para demonstração de até 20 minutos.
+- `docs/DESAFIOS.md`: desafios, ajustes técnicos e aprendizados.
 
 Use somente `k8s/eks` para a configuração de nuvem. Não misture manifestos locais antigos.
 

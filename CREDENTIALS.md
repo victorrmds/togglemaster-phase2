@@ -33,9 +33,6 @@ Essa codificação não equivale a criptografia.
 - Verifique o histórico do repositório de destino. Um `.gitignore` novo não
   remove segredos previamente commitados. Se houve exposição, revogue/rotacione
   as credenciais afetadas e trate o histórico.
-- Os manifestos antigos da pasta kubernetes ainda precisam ser separados da
-  configuração EKS atual antes de serem usados como procedimento de implantação.
+- Para implantação no EKS, utilizar `k8s/eks`. A pasta `kubernetes` versionada contém o modelo de Secrets.
 
-Auditoria local em 01/11/2026: não foi encontrado `.git` na pasta do projeto.
-Portanto, o histórico remoto ainda não foi auditado. Os arquivos privados
-existentes foram preservados para manter o ambiente de teste funcional.
+Os arquivos reais de configuração permanecem fora do versionamento. Antes de cada publicação, revisar os arquivos preparados para commit e verificar possíveis valores sensíveis. As regras do `.gitignore` não removem conteúdo já registrado no histórico.

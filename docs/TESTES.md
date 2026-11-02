@@ -1,7 +1,6 @@
 # Evidências de validação
 
-Fonte: saídas de PowerShell e logs fornecidos durante a execução do projeto.
-Este registro não representa auditoria independente nem execução de testes automatizados.
+Este documento registra as saídas de comandos e os logs coletados nos testes manuais de integração, carga e escalabilidade. Não representa uma suíte automatizada nem uma reconciliação individual de todos os eventos.
 
 ## Local - 01/11/2026
 
